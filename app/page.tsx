@@ -2,8 +2,17 @@
 
 import React, { useState, useEffect, useRef } from "react";
 
-// Local image assets in /public
-const IMAGES = [
+// Exact image sources from prompt with fallback
+const PROMPT_IMAGES = [
+  "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260725_120544_94be5de4-0f4f-494c-bb78-c532290040a6.png&w=1920&q=85",
+  "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260725_120601_5c6e4705-b992-4227-9dff-9b000351c283.png&w=1920&q=85",
+  "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260725_120619_7bc65416-a3d7-4e8c-9929-743f233378fe.png&w=1920&q=85",
+  "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260725_120627_b40a97b0-c5fa-408c-a77e-dc8fa44f8584.png&w=1920&q=85",
+  "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260725_120635_515cde41-2dc6-48ce-a236-088a5bc74ca8.png&w=1920&q=85",
+  "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260725_120645_5a1170c6-145b-477b-abd2-f8620acccd8d.png&w=1920&q=85",
+];
+
+const LOCAL_FALLBACKS = [
   "/img1.png",
   "/img2.png",
   "/img3.png",
@@ -160,10 +169,10 @@ export default function Home() {
     }
   };
 
-  const duplicatedImages = [...IMAGES, ...IMAGES];
+  const duplicatedImages = [...PROMPT_IMAGES, ...PROMPT_IMAGES];
 
   return (
-    <div className="h-screen w-screen bg-white overflow-hidden text-neutral-900 selection:bg-neutral-200 flex flex-col justify-between">
+    <div className="min-h-screen bg-white overflow-hidden text-neutral-900 selection:bg-neutral-200">
       {/* ═══════════════════════════════════════
           1) NAVBAR — fixed top bar
           ═══════════════════════════════════════ */}
@@ -291,13 +300,13 @@ export default function Home() {
       {/* ═══════════════════════════════════════
           2) HERO CONTENT
           ═══════════════════════════════════════ */}
-      <section className="pt-20 sm:pt-24 pb-1 text-center px-4 sm:px-6 flex-shrink-0">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[5rem] xl:text-[5.5rem] font-semibold tracking-tight text-neutral-900 leading-[1.05] max-w-3xl mx-auto">
+      <section className="pt-24 sm:pt-28 pb-1 text-center px-4 sm:px-6">
+        <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-[5.5rem] font-semibold tracking-tight text-neutral-900 leading-[1.05] max-w-3xl mx-auto">
           Atelier Void
           <br />
           Studio
         </h1>
-        <p className="mt-3 sm:mt-5 text-base sm:text-lg md:text-xl text-neutral-900 max-w-xl mx-auto leading-relaxed">
+        <p className="mt-4 sm:mt-6 text-base sm:text-lg md:text-xl text-neutral-900 max-w-xl mx-auto leading-relaxed">
           The building you deserve has never been built before.
         </p>
       </section>
@@ -305,9 +314,9 @@ export default function Home() {
       {/* ═══════════════════════════════════════
           3) IMAGE MARQUEE (core visual + interaction)
           ═══════════════════════════════════════ */}
-      <section className="relative py-2 sm:py-3 overflow-hidden flex-1 flex items-center min-h-0">
+      <section className="relative py-4 overflow-hidden">
         {/* TOP CURVED WHITE MASK (pointer-events-none, z-10) */}
-        <div className="absolute top-0 left-0 right-0 h-[60px] sm:h-[80px] md:h-[100px] pointer-events-none z-10">
+        <div className="absolute top-0 left-0 right-0 h-[80px] sm:h-[100px] pointer-events-none z-10">
           <svg
             viewBox="0 0 1440 100"
             preserveAspectRatio="none"
@@ -319,7 +328,7 @@ export default function Home() {
         </div>
 
         {/* BOTTOM CURVED WHITE MASK (mirror) */}
-        <div className="absolute bottom-0 left-0 right-0 h-[60px] sm:h-[80px] md:h-[100px] pointer-events-none z-10">
+        <div className="absolute bottom-0 left-0 right-0 h-[80px] sm:h-[100px] pointer-events-none z-10">
           <svg
             viewBox="0 0 1440 100"
             preserveAspectRatio="none"
@@ -336,38 +345,46 @@ export default function Home() {
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
-          className={`flex w-max gap-3 sm:gap-4 py-2 select-none touch-none ${
+          className={`flex w-max gap-3 sm:gap-4 py-4 select-none touch-none ${
             isCursorGrabbing ? "cursor-grabbing" : "cursor-grab"
           }`}
           style={{ willChange: "transform" }}
           ref={trackRef}
         >
-          {duplicatedImages.map((src, index) => (
-            <div
-              key={index}
-              className="w-48 h-64 sm:w-64 sm:h-80 md:w-72 md:h-96 lg:w-80 lg:h-[30rem] max-h-[48vh] flex-shrink-0 rounded-2xl overflow-hidden bg-neutral-100"
-            >
-              <img
-                src={src}
-                alt=""
-                loading="lazy"
-                draggable={false}
-                className="w-full h-full object-cover pointer-events-none"
-              />
-            </div>
-          ))}
+          {duplicatedImages.map((src, index) => {
+            const fallbackSrc = LOCAL_FALLBACKS[index % LOCAL_FALLBACKS.length];
+            return (
+              <div
+                key={index}
+                className="w-60 h-80 sm:w-80 sm:h-[32rem] flex-shrink-0 rounded-2xl overflow-hidden bg-neutral-100"
+              >
+                <img
+                  src={src}
+                  onError={(e) => {
+                    if (e.currentTarget.src !== fallbackSrc) {
+                      e.currentTarget.src = fallbackSrc;
+                    }
+                  }}
+                  alt=""
+                  loading="lazy"
+                  draggable={false}
+                  className="w-full h-full object-cover pointer-events-none"
+                />
+              </div>
+            );
+          })}
         </div>
       </section>
 
       {/* ═══════════════════════════════════════
           4) BOTTOM SECTION
           ═══════════════════════════════════════ */}
-      <section className="text-center px-4 sm:px-6 pt-1 pb-6 sm:pb-8 md:pb-10 max-w-2xl mx-auto flex-shrink-0">
-        <p className="text-sm sm:text-base md:text-lg text-neutral-900 leading-relaxed">
+      <section className="text-center px-4 sm:px-6 pt-2 pb-12 sm:pb-16 max-w-2xl mx-auto">
+        <p className="text-base sm:text-lg md:text-xl text-neutral-900 leading-relaxed">
           We design private residences and commercial spaces from a blank page. No templates, no repeated floorplans, no shortcuts.
         </p>
 
-        <div className="mt-4 sm:mt-5 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-8">
+        <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
           <a
             href="#"
             className="text-neutral-900 font-semibold underline underline-offset-4 decoration-neutral-400 hover:decoration-neutral-900 transition-colors"
